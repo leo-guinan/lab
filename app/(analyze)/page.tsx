@@ -9,6 +9,9 @@ export default async function UploadPitchDeckPage() {
     const session = await auth()
 
     if (!session?.user) {
+
+
+
         redirect(`/sign-in?next=/`)
     }
 

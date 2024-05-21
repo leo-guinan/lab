@@ -8,8 +8,10 @@ import {IconGoogle, SendIcon} from "@/components/ui/icons";
 import {signIn} from "next-auth/react";
 import {useState} from "react";
 import {LoginButton} from "@/components/login-button";
+import {useSearchParams} from "next/navigation";
 
 export default function LoginWithProvider() {
+    const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>('')
     const [email, setEmail] = useState<string>('')
@@ -19,7 +21,7 @@ export default function LoginWithProvider() {
             return
         }
         setIsLoading(true)
-        await signIn('resend', {callbackUrl: `/`, email})
+        await signIn('resend', {callbackUrl: searchParams.get('callbackUrl') ?? "/", email})
     }
     return (
         <div className="w-full max-w-md p-6 bg-white dark:bg-gray-900 shadow-lg rounded-lg">

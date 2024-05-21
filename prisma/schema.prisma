@@ -24,6 +24,7 @@ model User {
   image            String?
   role             String    @default("user")
   currentDeckId    Int?
+  referredById     String?
 
   pitchDeckRequests PitchDeckRequest[]
   sessions          Session[]
