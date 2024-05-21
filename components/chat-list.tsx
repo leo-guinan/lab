@@ -30,7 +30,8 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
                                 className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
 
                             >
-                                <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo"/>
+                                <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo"
+                                       className="rounded-full"/>
 
 
                             </div>
@@ -63,7 +64,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
                             className='flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-primary text-primary-foreground'
 
                         >
-                            <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo"/>
+                            <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo" className="rounded-full"/>
 
 
                         </div>
