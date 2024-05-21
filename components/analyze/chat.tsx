@@ -27,6 +27,7 @@ interface AnalysisChatProps {
     concern: string
     objections: string
     howToAddress: string
+    pitchDeckAnalysis: string
     user: {
         name?: string | null
         image?: string | null
@@ -41,7 +42,8 @@ export default function AnalysisChat({
                                          user,
                                          concern,
                                          objections,
-                                         howToAddress
+                                         howToAddress,
+                                         pitchDeckAnalysis
                                      }: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
@@ -55,6 +57,7 @@ export default function AnalysisChat({
     const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
     const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
     const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
+    const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<string>(pitchDeckAnalysis)
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -98,6 +101,9 @@ export default function AnalysisChat({
                     }
                     if (data.how_to_overcome) {
                         setDisplayedHowToAddress(data.how_to_overcome)
+                    }
+                    if (data.pitch_deck_analysis) {
+                        setDisplayedPitchDeckAnalysis(data.pitch_deck_analysis)
                     }
 
                     if (data.status) {
@@ -193,11 +199,11 @@ export default function AnalysisChat({
     return (
         <>
             <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
-                {displayedConcern && displayedObjection && displayedHowToAddress ? (
+                {displayedConcern && displayedObjection && displayedHowToAddress && displayedPitchDeckAnalysis ? (
                     <>
                         <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
-                                <div className="p-y-12">
+                                <div className="p-y-12 w-4/5 mx-auto">
                                     <ChatList messages={displayedMessages} user={user}
                                               chatMessageLoading={chatMessageLoading}/>
                                     <ChatScrollAnchor/>
@@ -212,17 +218,20 @@ export default function AnalysisChat({
                                 </div>
                             </div>
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
-                                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                <div className="mx-auto border-box w-4/5">
+                                    <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
 
-                                <Scores scores={loadedScores}/>
-                                <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
-                                        howToAddress={displayedHowToAddress}/>
+                                    <Scores scores={loadedScores}/>
+                                    <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
+                                            howToAddress={displayedHowToAddress}
+                                            pitchDeckAnalysis={displayedPitchDeckAnalysis}/>
+                                </div>
                             </div>
                         </div>
 
                     </>
                 ) : (
-                     <>
+                    <>
                         <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
                                 <div className="mx-auto border-box">

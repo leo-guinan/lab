@@ -58,5 +58,6 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         concern={pitchDeckReport.top_concern}
         objections={pitchDeckReport.objections}
         howToAddress={pitchDeckReport.how_to_overcome}
+        pitchDeckAnalysis={pitchDeckReport.pitch_deck_analysis}
     />
 }
