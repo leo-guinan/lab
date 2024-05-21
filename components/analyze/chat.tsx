@@ -234,13 +234,15 @@ export default function AnalysisChat({
                     <>
                         <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
-                                <div className="mx-auto border-box">
+                                <div className="mx-auto border-box w-4/5">
                                     <FAQ user={user}/>
                                 </div>
                             </div>
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
-                                <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
-                                <EmptyScreen currentStep={currentStep} user={user}/>
+                                <div className="flex flex-col w-4/5 mx-auto">
+                                    <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                    <EmptyScreen currentStep={currentStep} user={user}/>
+                                </div>
                             </div>
                         </div>
 

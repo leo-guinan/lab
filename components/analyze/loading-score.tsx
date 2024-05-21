@@ -23,57 +23,60 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
     const textColor = getTextColor(color);
 
     return (
-        <div className="flex flex-col items-center">
-            <div className="text-sm font-semibold uppercase tracking-wider" style={{color: color}}>
+        <div className="flex flex-col items-center flex-1 p-2">
+            <div className="text-sm font-semibold uppercase tracking-wider whitespace-nowrap flex-1" style={{color: color}}>
                 {title}
             </div>
-            <svg width="120" height="120">
-                <circle
-                    cx="60"
-                    cy="60"
-                    r={radius}
-                    fill="none"
-                    stroke={`${color}20`}
-                    strokeWidth="10"
-                />
-                <circle
-                    cx="60"
-                    cy="60"
-                    r={radius}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="10"
-                    strokeDasharray={`${strokeFilled} ${strokeUnfilled}`}
-                    strokeDashoffset={0}
-                    style={{
-                        transformOrigin: "center center",
-                        transformBox: "fill-box",
-                        animation: "rotate 2s linear infinite"
-                    }}
-                />
-                <style>{`
+            <div className="relative" style={{width: '100%', paddingTop: '100%'}}>
+
+                <svg width="120" height="120" className="absolute top-0 left-0 size-full" viewBox="0 0 120 120">
+                    <circle
+                        cx="60"
+                        cy="60"
+                        r={radius}
+                        fill="none"
+                        stroke={`${color}20`}
+                        strokeWidth="10"
+                    />
+                    <circle
+                        cx="60"
+                        cy="60"
+                        r={radius}
+                        fill="none"
+                        stroke={color}
+                        strokeWidth="10"
+                        strokeDasharray={`${strokeFilled} ${strokeUnfilled}`}
+                        strokeDashoffset={0}
+                        style={{
+                            transformOrigin: "center center",
+                            transformBox: "fill-box",
+                            animation: "rotate 2s linear infinite"
+                        }}
+                    />
+                    <style>{`
                     @keyframes rotate {
                         from { transform: rotate(0deg); }
                         to { transform: rotate(360deg); }
                     }
                 `}</style>
-                <circle
-                    cx="60"
-                    cy="60"
-                    r="40"
-                    fill={color}
-                />
-                <text
-                    x="50%"
-                    y="50%"
-                    dy=".3em"
-                    textAnchor="middle"
-                    fontSize="12"
-                    fill={textColor}
-                >
-                    Loading...
-                </text>
-            </svg>
+                    <circle
+                        cx="60"
+                        cy="60"
+                        r="40"
+                        fill={color}
+                    />
+                    <text
+                        x="50%"
+                        y="50%"
+                        dy=".3em"
+                        textAnchor="middle"
+                        fontSize="12"
+                        fill={textColor}
+                    >
+                        Loading...
+                    </text>
+                </svg>
+            </div>
         </div>
     );
 }
