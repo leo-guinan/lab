@@ -23,8 +23,8 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
     const textColor = getTextColor(color);
 
     return (
-        <div className="flex flex-col items-center flex-1 p-2">
-            <div className="flex text-base font-semibold uppercase tracking-wider text-center items-end" style={{color: color, height: "40px"}}>
+        <div className="flex flex-col items-center flex-0 p-2 w-[200px] sm:w-[100px]">
+            <div className="flex text-sm font-semibold uppercase tracking-wider text-center whitespace-nowrap items-center" style={{color: color, height: "40px"}}>
                 {title}
             </div>
             <div className="relative" style={{width: '100%', paddingTop: '100%'}}>

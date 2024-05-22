@@ -64,9 +64,9 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
 
     const titleColor = overrideColor ?? color
     return (
-        <div className="flex flex-col items-center flex-1 p-2">
+        <div className="flex flex-col items-center flex-0 p-2 w-[200px] sm:w-[100px]">
             <div
-                className={cn("flex text-base font-semibold uppercase tracking-wider text-center items-end", overrideColor ? "dark:text-zinc-50" : "")}
+                className={cn("flex text-sm font-semibold uppercase tracking-wider text-center whitespace-nowrap items-center", overrideColor ? "dark:text-zinc-50" : "")}
                 style={{color: titleColor, height: "40px"}}>
                 {title}
             </div>

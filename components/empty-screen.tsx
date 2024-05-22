@@ -50,9 +50,9 @@ export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
     const deckColor = theme.theme === "dark" ? "#F9F9F9" : "#242424"
 
     return (
-        <div className={'pb-[200px] pt-4 md:pt-10'}>
+        <div className={'pb-[200px]'}>
             <div className="flex flex-col-reverse sm:flex-col w-full justify-center mx-auto max-w-2xl flex-wrap items-center">
-                <div className="flex flex-wrap justify-center items-center w-full">
+                <div className="flex flex-wrap flex-col sm:flex-row justify-center items-center w-full">
                     <LoadingProgressCircle title={"Market"} color="#8BDDE4"/>
                     <LoadingProgressCircle color="#FF7878" title="Team"/>
                     <LoadingProgressCircle color={deckColor} title="Deck Score"/>
@@ -60,7 +60,7 @@ export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
                     <LoadingProgressCircle color="#8BDDE4" title="Traction"/>
                 </div>
                 <div className="flex items-start justify-start w-full">
-                    <div className="flex w-3/5 p-2">
+                    <div className="flex w-full sm:w-3/5 p-2 ml-4">
                         <ProgressBar color="bg-howTo" borderColor="border-howTo"/>
                     </div>
                 </div>

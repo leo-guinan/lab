@@ -19,7 +19,7 @@ export default function FAQ({user}: { user: { name?: string | null, image?: stri
         },
         {
             question: "Will you be onboarding VCs and Angels?",
-            answer: "💰 Yes, we are currently onboarding VCs and Angels who will provide you with feedback more pitch deck feedback. You can ask Score My Deck to find vertical specific investors in  or help you find demo days based on your pitch deck and the latest fundraising trends."
+            answer: "💰Yes, we are currently onboarding VCs and Angels who will soon be able to add more context while providing you with feedback on your pitch deck. You can ask Score My Deck to find the latest fundraising trends, the current pre-seed valuations and the right investor equity stake holding."
 
         },
         {
