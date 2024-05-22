@@ -15,6 +15,9 @@ export async function SidebarDesktop() {
         where: {
             ownerId: session.user.id,
         },
+        orderBy: {
+            createdAt: 'desc'
+        }
     })
 
     return (

@@ -347,7 +347,23 @@ export async function getDeckReport(id: number) {
         })
         const parsed = await sendMessageResponse.json()
         console.log("Report", parsed)
-        return parsed
+        try {
+            return {
+                ...parsed,
+                pitch_deck_analysis: parsed.pitch_deck_analysis ? JSON.parse(parsed.pitch_deck_analysis).concerns : ""
+            }
+        } catch (e) {
+            console.error(e)
+            return {
+                ...parsed,
+                pitch_deck_analysis: [{
+                    title: "Pitch Deck Analysis",
+                    content: parsed.pitch_deck_analysis
+                }]
+            }
+        }
+
+
 
     } catch (e) {
         console.error(e)

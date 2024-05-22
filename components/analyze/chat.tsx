@@ -27,7 +27,10 @@ interface AnalysisChatProps {
     concern: string
     objections: string
     howToAddress: string
-    pitchDeckAnalysis: string
+    pitchDeckAnalysis: {
+        title:string
+        concern: string
+    }[]
     user: {
         name?: string | null
         image?: string | null
@@ -57,7 +60,7 @@ export default function AnalysisChat({
     const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
     const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
     const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
-    const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<string>(pitchDeckAnalysis)
+    const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<{title: string, concern:string}[]>(pitchDeckAnalysis)
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -103,7 +106,7 @@ export default function AnalysisChat({
                         setDisplayedHowToAddress(data.how_to_overcome)
                     }
                     if (data.pitch_deck_analysis) {
-                        setDisplayedPitchDeckAnalysis(data.pitch_deck_analysis)
+                        setDisplayedPitchDeckAnalysis(JSON.parse(data.pitch_deck_analysis))
                     }
 
                     if (data.status) {
