@@ -16,12 +16,16 @@ export default function CollapsibleSection({
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [height, setHeight] = useState("0px");
+    const [transitionDuration, setTransitionDuration] = useState("0.5s");
     const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (contentRef.current) {
+            const contentHeight = contentRef.current.scrollHeight;
+            const duration = Math.min(1.5, contentHeight / 100); // Adjust this value to control the maximum duration
+            setTransitionDuration(`${duration}s`);
             if (isOpen) {
-                setHeight(`${contentRef.current.scrollHeight}px`);
+                setHeight(`${contentHeight}px`);
             } else {
                 setHeight("0px");
             }
@@ -31,7 +35,10 @@ export default function CollapsibleSection({
     useEffect(() => {
         if (contentRef.current && isOpen) {
             requestAnimationFrame(() => {
-                setHeight(`${contentRef.current?.scrollHeight}px`);
+                const contentHeight = contentRef?.current?.scrollHeight ?? 0;
+                const duration = Math.min(1.5, contentHeight / 100); // Adjust this value to control the maximum duration
+                setTransitionDuration(`${duration}s`);
+                setHeight(`${contentHeight}px`);
             });
         }
     }, [children]);
@@ -40,7 +47,10 @@ export default function CollapsibleSection({
         setIsOpen(!isOpen);
         if (!isOpen) {
             if (contentRef.current) {
-                setHeight(`${contentRef.current.scrollHeight}px`);
+                const contentHeight = contentRef.current.scrollHeight;
+                const duration = Math.min(1.5, contentHeight / 25); // Adjust this value to control the maximum duration
+                setTransitionDuration(`${duration}s`);
+                setHeight(`${contentHeight}px`);
             }
         } else {
             setHeight("0px");
@@ -51,7 +61,7 @@ export default function CollapsibleSection({
         <div className={cn("w-full mb-8")}>
             <button
                 onClick={handleToggle}
-                className={cn("rounded-full bg-green-600 text-2xl items-center flex w-full py-4 text-left", headerColor ? `bg-${headerColor}` : "")}
+                className={cn("rounded-full bg-green-600 text-base items-center flex w-full py-4 text-left", headerColor ? `bg-${headerColor}` : "")}
             >
                 {isOpen ? (
                     <MinusIcon className="size-10" overrideColor={iconColor} />
@@ -62,10 +72,10 @@ export default function CollapsibleSection({
             </button>
             <div
                 ref={contentRef}
-                className="overflow-hidden transition-max-height duration-500 ease-out"
-                style={{ maxHeight: height, }}
+                className="overflow-hidden"
+                style={{ maxHeight: height, transition: `max-height ${transitionDuration} cubic-bezier(0.25, 0.8, 0.25, 1)` }}
             >
-                <div className="p-6 border-t border-gray-200 ml-8">{children}</div>
+                <div className="p-6 border-t border-gray-200 ml-8 text-base">{children}</div>
             </div>
         </div>
     );

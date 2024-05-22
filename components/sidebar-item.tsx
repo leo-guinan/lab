@@ -74,7 +74,7 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
                 <div className="flex flex-col justify-between items-start w-full max-w-full overflow-hidden">
                     <div className="flex flex-row items-center w-full truncate">
                         <ClipboardIcon className="mr-2 shrink-0"/>
-                        <span className="truncate shrink">
+                        <span className="truncate shrink text-base">
                             {name}
                         </span>
                     </div>

@@ -24,7 +24,7 @@ export function LoadingProgressCircle({color, title}: CircularProgressBarProps) 
 
     return (
         <div className="flex flex-col items-center flex-1 p-2">
-            <div className="text-sm font-semibold uppercase tracking-wider whitespace-nowrap flex-1" style={{color: color}}>
+            <div className="flex text-base font-semibold uppercase tracking-wider text-center items-end" style={{color: color, height: "40px"}}>
                 {title}
             </div>
             <div className="relative" style={{width: '100%', paddingTop: '100%'}}>

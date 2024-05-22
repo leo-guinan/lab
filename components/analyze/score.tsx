@@ -66,8 +66,8 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     return (
         <div className="flex flex-col items-center flex-1 p-2">
             <div
-                className={cn("text-sm font-semibold uppercase tracking-wider whitespace-nowrap", overrideColor ? "dark:text-zinc-50" : "")}
-                style={{color: titleColor}}>
+                className={cn("flex text-base font-semibold uppercase tracking-wider text-center items-end", overrideColor ? "dark:text-zinc-50" : "")}
+                style={{color: titleColor, height: "40px"}}>
                 {title}
             </div>
             <div className="relative" style={{width: '100%', paddingTop: '100%'}}>
