@@ -51,8 +51,8 @@ export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
 
     return (
         <div className={'pb-[200px]'}>
-            <div className="flex flex-col-reverse sm:flex-col w-full justify-center mx-auto max-w-2xl flex-wrap items-center">
-                <div className="flex flex-wrap flex-col sm:flex-row justify-center items-center w-full">
+            <div className="flex flex-col-reverse sm:flex-col w-full justify-center mx-auto max-w-2xl flex-wrap items-center xl:min-w-[500px]">
+                <div className="flex flex-wrap xl:flex-nowrap flex-col sm:flex-row justify-center items-center w-full">
                     <LoadingProgressCircle title={"Market"} color="#8BDDE4"/>
                     <LoadingProgressCircle color="#FF7878" title="Team"/>
                     <LoadingProgressCircle color={deckColor} title="Deck Score"/>

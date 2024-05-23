@@ -106,7 +106,7 @@ export default function AnalysisChat({
                         setDisplayedHowToAddress(data.how_to_overcome)
                     }
                     if (data.pitch_deck_analysis) {
-                        setDisplayedPitchDeckAnalysis(JSON.parse(data.pitch_deck_analysis))
+                        setDisplayedPitchDeckAnalysis(data.pitch_deck_analysis.concerns)
                     }
 
                     if (data.status) {
