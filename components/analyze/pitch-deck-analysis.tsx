@@ -19,7 +19,7 @@ export default function PitchDeckAnalysis({pitchDeckAnalysis}: PitchDeckAnalysis
     return (
         <div>
 
-            <div className="text-base leading-6 cursor-text select-all flex flex-col w-full overflow-visible">
+            <div className="text-base leading-6 cursor-text flex flex-col w-full overflow-visible">
                 {pitchDeckAnalysis.map((analysis, index) => (
                     <div key={`analysis_section_${index}`}>
                         <AnalysisSection content={analysis.concern} title={analysis.title} />
