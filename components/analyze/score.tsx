@@ -1,4 +1,3 @@
-// Define the types for the component props
 import {useEffect, useRef, useState} from "react";
 import {cn} from "@/lib/utils";
 import {useTheme} from "next-themes";
@@ -16,7 +15,8 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     const requestRef = useRef<number>();
     const innerRadius = 40;
     const color = progress > 70 ? '#5CE1E6' : progress > 40 ? '#FFCC2F' : '#FF9494';
-    const theme = useTheme()
+    const theme = useTheme();
+
     useEffect(() => {
         const duration = 1000; // Total duration of the animation in milliseconds
         const frameRate = 10; // Duration between frames in milliseconds
@@ -49,6 +49,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
 
     // Calculate the stroke dash offset
     const strokeDashoffset = circumference - (circumference * (currentProgress / 100));
+
     // Function to determine text color based on background color
     const getTextColor = (bgColor: string) => {
         // This is a very basic way to determine if the color is light or dark.
@@ -61,8 +62,8 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     };
 
     const textColor = getTextColor(overrideColor || color);
+    const titleColor = overrideColor ?? color;
 
-    const titleColor = overrideColor ?? color
     return (
         <div className="flex flex-col items-center flex-0 p-2 w-[200px] sm:w-[100px]">
             <div
@@ -71,7 +72,6 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
                 {title}
             </div>
             <div className="relative" style={{width: '100%', paddingTop: '100%'}}>
-
                 <svg width="120" height="120" className="absolute top-0 left-0 size-full" viewBox="0 0 120 120">
                     <circle
                         cx="60"
@@ -114,4 +114,3 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
         </div>
     );
 };
-

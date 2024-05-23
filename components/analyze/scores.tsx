@@ -43,12 +43,15 @@ export default function Scores({scores}: ScoresProps) {
     return (
         <>
             {scores && displayScores && (
-                <div className="flex flex-col sm:flex-row w-full justify-center mx-auto max-w-2xl items-center">
+                <div
+                    className="flex flex-col flex-wrap xl:flex-nowrap sm:flex-row w-full justify-center mx-auto max-w-2xl items-center xl:min-w-[500px]">
                     <CircularProgressBar progress={scores.market.score} title="Market"/>
                     <CircularProgressBar progress={scores.team.score} title="Team"/>
-                    <CircularProgressBar progress={scores.final.score} title="Deck Score" overrideColor={overrideColor}/>
-                    <CircularProgressBar progress={scores.product.score}  title="Product"/>
+                    <CircularProgressBar progress={scores.final.score} title="Deck Score"
+                                         overrideColor={overrideColor}/>
+                    <CircularProgressBar progress={scores.product.score} title="Product"/>
                     <CircularProgressBar progress={scores.traction.score} title="Traction"/>
+
                 </div>
             )}
         </>
