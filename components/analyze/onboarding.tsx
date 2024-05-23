@@ -1,6 +1,7 @@
 import {ChatMessage} from "@/components/chat-message";
 import {nanoid} from "@/lib/utils";
-import CollapsibleSection from "@/components/collapsible-section";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import MarkdownBlock from "@/components/ui/markdown-block";
 
 export default function Onboarding({user}: { user: { name?: string | null, image?: string | null } }) {
 
@@ -27,18 +28,19 @@ export default function Onboarding({user}: { user: { name?: string | null, image
                 role: "bot",
                 id: nanoid()
             }}/>
-            {questions.map((q, index) => (
-                <div key={`question-${index}`}>
-                    <CollapsibleSection title={q.question} headerColor="howTo-background"
-                                        iconColor="#8BDDE4">
-                        <>
-                            <p>{q.answer}</p>
-                        </>
+            <Accordion type="multiple" className="w-full">
+                {questions.map((q, index) => (
+                    <AccordionItem value={`question-${index}`} key={`question-${index}`}>
+                        <AccordionTrigger iconColor="#8BDDE4">{q.question}</AccordionTrigger>
+                        <AccordionContent>
+                            <MarkdownBlock content={q.answer}   />
+                        </AccordionContent>
+                    </AccordionItem>
+                ))}
 
-                    </CollapsibleSection>
 
-                </div>
-            ))}
+            </Accordion>
+
         </div>
     )
 }
