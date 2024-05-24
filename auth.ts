@@ -51,7 +51,7 @@ export const authOptions = {
     },
     pages: {
         signIn: '/sign-in' // overrides the next-auth default signin page https://authjs.dev/guides/basics/pages
-    }
+    },
 }
 
 export const {
