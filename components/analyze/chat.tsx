@@ -220,7 +220,7 @@ export default function AnalysisChat({
                                                           chatMessageLoading={chatMessageLoading}/>
                                                 <ChatScrollAnchor/>
                                             </ScrollArea>
-                                            <div className="relative h-full">
+                                            <div className="relative">
                                                 <ChatPanel
                                                     isLoading={isLoading}
                                                     input={input}
