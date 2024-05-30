@@ -15,20 +15,30 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(cuid())
-  createdAt        DateTime  @default(now())
-  email            String    @unique
-  emailVerified    DateTime?
-  name             String?
-  stripeCustomerId String?
-  image            String?
-  role             String    @default("user")
-  currentDeckId    Int?
-  referredById     String?
+  id                 String             @id @default(cuid())
+  createdAt          DateTime           @default(now())
+  email              String             @unique
+  emailVerified      DateTime?
+  name               String?
+  stripeCustomerId   String?
+  image              String?
+  role               String             @default("user")
+  currentDeckId      Int?
+  referredById       String?
+  currentDeckVersion Int                @default(1)
+  company            Company[]
+  pitchDeckRequests  PitchDeckRequest[]
+  sessions           Session[]
+  accounts           Account[]
+}
 
-  pitchDeckRequests PitchDeckRequest[]
-  sessions          Session[]
-  accounts          Account[]
+model Company {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  name      String
+  ownerId   String
+  owner     User      @relation(fields: [ownerId], references: [id])
 }
 
 model PitchDeckRequest {

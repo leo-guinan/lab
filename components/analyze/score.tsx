@@ -6,9 +6,10 @@ interface CircularProgressBarProps {
     progress: number;
     title: string;
     overrideColor?: string;
+    delta?: number;
 }
 
-export function CircularProgressBar({progress, title, overrideColor}: CircularProgressBarProps) {
+export function CircularProgressBar({progress, title, overrideColor, delta = 0}: CircularProgressBarProps) {
     const radius = 50;
     const circumference = 2 * Math.PI * radius;
     const [currentProgress, setCurrentProgress] = useState(0);
@@ -64,13 +65,22 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
     const textColor = getTextColor(overrideColor || color);
     const titleColor = overrideColor ?? color;
 
+    const deltaColor = delta ? (delta > 0 ? '#5CE1E6' : '#FF9494') : textColor;
+
     return (
         <div className="flex flex-col items-center flex-0 p-2 w-[200px] sm:w-[100px]">
             <div
-                className={cn("flex text-sm font-semibold uppercase tracking-wider text-center whitespace-nowrap items-center", overrideColor ? "dark:text-zinc-50" : "")}
+                className={cn("flex text-sm font-semibold uppercase tracking-wider text-center whitespace-nowrap items-center mb-4", overrideColor ? "dark:text-zinc-50" : "")}
                 style={{color: titleColor, height: "40px"}}>
                 {title}
             </div>
+            {!!delta && delta !== 0 && (
+
+
+                <div className="flex text-xs text-center -mt-4" style={{color: deltaColor}}>
+                    {`(${delta > 0 ? '+' : '-'}${delta}%)`}
+                </div>
+            )}
             <div className="relative" style={{width: '100%', paddingTop: '100%'}}>
                 <svg width="120" height="120" className="absolute top-0 left-0 size-full" viewBox="0 0 120 120">
                     <circle
@@ -108,6 +118,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
                         fill={textColor}
                     >
                         {Math.round(currentProgress)}%
+
                     </text>
                 </svg>
             </div>

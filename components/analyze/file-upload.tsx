@@ -1,7 +1,7 @@
 'use client'
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
-import {getUploadUrl} from "@/app/actions/analyze";
+import {getUploadUrl, updateDeckVersion} from "@/app/actions/analyze";
 import DisplayFile from "@/components/analyze/file";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
@@ -43,7 +43,6 @@ const FileUpload: React.FC = () => {
 
     useEffect(() => {
         if (uploadSuccess && pitchDeckId) {
-            console.log(pitchDeckId)
             router.push(`/report/${pitchDeckId.toString()}`)
         }
     }, [uploadSuccess, pitchDeckId])
@@ -100,7 +99,9 @@ const FileUpload: React.FC = () => {
 
             if (response.ok) {
                 console.log('File uploaded successfully');
+                await updateDeckVersion()
                 setUploadSuccess(true)
+
                 // Handle response here
             } else {
                 setLoading(false);

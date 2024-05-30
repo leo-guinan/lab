@@ -53,8 +53,7 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         uuid={pitchDeck.uuid}
         scores={scores}
         messages={response.messages}
-        title={pitchDeck.name ??
-            formatToday(pitchDeck.createdAt)}
+        title={formatToday(pitchDeck.createdAt)}
         concern={pitchDeckReport.top_concern}
         objections={pitchDeckReport.objections}
         howToAddress={pitchDeckReport.how_to_overcome}

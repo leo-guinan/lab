@@ -25,22 +25,8 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
     const pathname = usePathname();
 
     const isActive = pathname === `/report/${deck.id}`;
-    const [newChatId, setNewChatId] = useLocalStorage('newChatId', null);
     const shouldAnimate = false;
-
-    const [name, setName] = useState(deck?.name || formatToday(deck?.createdAt))
     const formattedDate = formatToday(deck?.createdAt);
-    const showDate = name !== formattedDate;
-
-    useEffect(() => {
-        const checkForName = async () => {
-            if (!deck?.name || deck.name.includes('.pdf')) {
-                deck.name = deck.name || formattedDate;
-                setName(await getDeckName(deck.id));
-            }
-        }
-        checkForName()
-    })
     if (!deck?.id) return null;
 
     return (
@@ -75,14 +61,9 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
                     <div className="flex flex-row items-center w-full truncate">
                         <ClipboardIcon className="mr-2 shrink-0"/>
                         <span className="truncate shrink text-base">
-                            {name}
+                            {formattedDate}
                         </span>
                     </div>
-                    {showDate && (
-                        <div className="text-xs text-zinc-400 dark:text-zinc-600 ml-2">
-                            {formattedDate}
-                        </div>
-                    )}
                 </div>
             </Link>
             {isActive && <div className="absolute right-2 top-1">{children}</div>}

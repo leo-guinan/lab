@@ -19,7 +19,19 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, pit
     const document = await createDocument(session.user.id, "Pitch deck analysis still running...", "prelo")
     // make filename url safe
     const safeFilename = encodeURIComponent(filename)
-    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}`
+    const client = process.env.API_CLIENT as string
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        }
+    })
+if (!user) {
+        return {
+            error: "User not found"
+        }
+    }
+
+    const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=${client}&user_id=${user.id}&deck_version=${user.currentDeckVersion}`
     console.log(url)
     const uploadUrlResponse = await fetch(url, {
         method: 'GET',
@@ -108,6 +120,38 @@ export async function getDocument(documentId: string, dbName = "myaicofounder", 
     await client.close();
     return document;
 
+}
+
+export async function updateDeckVersion() {
+    console.log("Updating deck version")
+    const session = await auth()
+    if (!session?.user) {
+        return {
+            error: "User not found"
+        }
+    }
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        }
+    })
+    if (!user) {
+        return {
+            error: "User not found"
+        }
+    }
+
+    const newDeckVersion = user.currentDeckVersion + 1
+
+    await prisma.user.update({
+        where: {
+            id: user.id
+        },
+        data: {
+            currentDeckVersion: newDeckVersion
+        }
+    })
 }
 
 export async function getScores(pitchDeckId: number) {
@@ -346,7 +390,6 @@ export async function getDeckReport(id: number) {
             })
         })
         const parsed = await sendMessageResponse.json()
-        console.log("Report", parsed)
         try {
             return {
                 ...parsed,
