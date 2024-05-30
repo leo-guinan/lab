@@ -12,6 +12,8 @@ import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
 import Report from "@/components/analyze/report";
 import FAQ from "@/components/analyze/faq";
+import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 interface PreloChatMessage {
     id: string
@@ -28,7 +30,7 @@ interface AnalysisChatProps {
     objections: string
     howToAddress: string
     pitchDeckAnalysis: {
-        title:string
+        title: string
         concern: string
     }[]
     user: {
@@ -60,7 +62,10 @@ export default function AnalysisChat({
     const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
     const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
     const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
-    const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<{title: string, concern:string}[]>(pitchDeckAnalysis)
+    const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<{
+        title: string,
+        concern: string
+    }[]>(pitchDeckAnalysis)
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -204,32 +209,50 @@ export default function AnalysisChat({
             <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
                 {displayedConcern && displayedObjection && displayedHowToAddress && displayedPitchDeckAnalysis ? (
                     <>
-                        <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
-                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll pb-[200px]  ">
-                                <div className="p-y-12 w-4/5 mx-auto">
-                                    <ChatList messages={displayedMessages} user={user}
-                                              chatMessageLoading={chatMessageLoading}/>
-                                    <ChatScrollAnchor/>
-                                    <ChatPanel
-                                        isLoading={isLoading}
-                                        input={input}
-                                        setInput={setInput}
-                                        sendMessage={sendMessage}
+                        <div className="flex flex-col-reverse sm:flex-row h-screen">
+                            <ResizablePanelGroup direction="horizontal">
+                                <ResizablePanel>
+                                    <div
+                                        className="flex flex-col w-full h-full">
+                                        <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
+                                            <ScrollArea className="flex flex-col size-full">
+                                                <ChatList messages={displayedMessages} user={user}
+                                                          chatMessageLoading={chatMessageLoading}/>
+                                                <ChatScrollAnchor/>
+                                            </ScrollArea>
+                                            <div className="relative h-full">
+                                                <ChatPanel
+                                                    isLoading={isLoading}
+                                                    input={input}
+                                                    setInput={setInput}
+                                                    sendMessage={sendMessage}
 
-                                    />
-                                    <div ref={bottomRef}/>
-                                </div>
-                            </div>
-                            <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
-                                <div className="mx-auto border-box w-4/5">
-                                    <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                                />
+                                            </div>
+                                            <div ref={bottomRef}/>
+                                        </div>
+                                    </div>
 
-                                    <Scores scores={loadedScores}/>
-                                    <Report topObjection={displayedConcern} objectionsToOvercome={displayedObjection}
-                                            howToAddress={displayedHowToAddress}
-                                            pitchDeckAnalysis={displayedPitchDeckAnalysis}/>
-                                </div>
-                            </div>
+                                </ResizablePanel>
+                                <ResizableHandle/>
+                                <ResizablePanel>
+                                    <div className="flex flex-col size-full overflow-y-scroll">
+                                        <div className="mx-auto border-box w-4/5">
+                                            <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                            <ScrollArea className="flex flex-col size-full">
+                                                <Scores scores={loadedScores}/>
+                                                <Report topObjection={displayedConcern}
+                                                        objectionsToOvercome={displayedObjection}
+                                                        howToAddress={displayedHowToAddress}
+                                                        pitchDeckAnalysis={displayedPitchDeckAnalysis}/>
+                                            </ScrollArea>
+                                        </div>
+                                    </div>
+
+                                </ResizablePanel>
+                            </ResizablePanelGroup>
+
+
                         </div>
 
                     </>
