@@ -206,16 +206,16 @@ export default function AnalysisChat({
     }
     return (
         <>
-            <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
+            <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}>
                 {displayedConcern && displayedObjection && displayedHowToAddress && displayedPitchDeckAnalysis ? (
                     <>
-                        <div className="flex flex-col-reverse sm:flex-row h-screen">
+                        <div className="flex flex-col-reverse sm:flex-row h-full">
                             <ResizablePanelGroup direction="horizontal">
                                 <ResizablePanel>
                                     <div
                                         className="flex flex-col w-full h-full">
                                         <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
-                                            <ScrollArea className="flex flex-col size-full">
+                                            <ScrollArea className="flex flex-col size-full pb-8">
                                                 <ChatList messages={displayedMessages} user={user}
                                                           chatMessageLoading={chatMessageLoading}/>
                                                 <ChatScrollAnchor/>

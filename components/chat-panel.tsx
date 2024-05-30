@@ -20,7 +20,7 @@ export function ChatPanel({
 
     return (
         <div
-            className="absolute bottom-0 inset-x-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% animate-in duration-300 ease-in-out dark:from-background/10 dark:from-10% dark:to-background/80 ">
+            className="sticky bottom-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% animate-in duration-300 ease-in-out dark:from-background/10 dark:from-10% dark:to-background/80 ">
             <ButtonScrollToBottom/>
             <div className="mr-auto sm:max-w-2xl sm:px-4">
                 <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-t-xl sm:border md:py-4">
