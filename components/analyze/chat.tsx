@@ -16,6 +16,7 @@ import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components
 import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
+import AnalysisCompletedModal from "@/components/analyze/analysis-completed-modal";
 
 interface PreloChatMessage {
     id: string
@@ -55,11 +56,10 @@ export default function AnalysisChat({
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
-    const client = useRef<W3CWebSocket | null>(null)
-    const [currentStep, setCurrentStep] = useState<number>(0)
     const [loadedScores, setLoadedScores] = useState<PitchDeckScores | null>(scores)
     const [displayedTitle, setDisplayedTitle] = useState<string>(title)
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const [completedDialogOpen, setCompletedDialogOpen] = useState<boolean>(false)
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
     const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
     const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
@@ -109,6 +109,7 @@ export default function AnalysisChat({
         if (parsedData.pitch_deck_analysis) {
             setDisplayedPitchDeckAnalysis(parsedData.pitch_deck_analysis.concerns)
         }
+        setCompletedDialogOpen(true)
     }, [data])
 
 
@@ -216,7 +217,7 @@ export default function AnalysisChat({
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
                                 <div className="flex flex-col w-4/5 mx-auto">
                                     <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
-                                    <EmptyScreen currentStep={currentStep} user={user}/>
+                                    <EmptyScreen />
                                 </div>
                             </div>
                         </div>
@@ -225,7 +226,7 @@ export default function AnalysisChat({
 
                 )}
             </div>
-
+            <AnalysisCompletedModal open={completedDialogOpen} setOpen={setCompletedDialogOpen}/>
         </>
     )
 
