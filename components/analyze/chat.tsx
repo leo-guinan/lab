@@ -5,7 +5,7 @@ import {EmptyScreen} from "@/components/empty-screen";
 import {ChatPanel} from "@/components/chat-panel";
 import {useEffect, useRef, useState} from "react";
 // import {sendPreloChatMessage} from "@/app/actions/prelo";
-import {ICloseEvent, IMessageEvent, w3cwebsocket as W3CWebSocket} from "websocket";
+import {w3cwebsocket as W3CWebSocket} from "websocket";
 import {PitchDeckScores} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
@@ -14,6 +14,8 @@ import Report from "@/components/analyze/report";
 import FAQ from "@/components/analyze/faq";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import type {SWRSubscriptionOptions} from 'swr/subscription'
+import useSWRSubscription from 'swr/subscription'
 
 interface PreloChatMessage {
     id: string
@@ -66,6 +68,19 @@ export default function AnalysisChat({
         title: string,
         concern: string
     }[]>(pitchDeckAnalysis)
+
+    const {
+        data,
+        error
+    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key, {next}: SWRSubscriptionOptions<number, Error>) => {
+        console.log("key", key)
+        const socket = new WebSocket(key)
+        socket.addEventListener('message', (event) => next(null, event.data))
+        // @ts-ignore
+        socket.addEventListener('error', (event) => next(event.error))
+        return () => socket.close()
+    })
+
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({behavior: 'smooth'});
@@ -73,96 +88,30 @@ export default function AnalysisChat({
     }, [displayedMessages]); // Dependency array includes the data triggering the scroll
 
     useEffect(() => {
+        if (!data) return
+        const parsedData = JSON.parse(data.toString())
 
-        const connectSocket = () => {
-
-            // client.current = new W3CWebSocket(`ws://localhost:3000/api/socket/`)
-            if (uuid) {
-                if (!client.current) {
-                    client.current = new W3CWebSocket(
-                        `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/`
-                    )
-                }
-
-                // client.current = new W3CWebSocket(
-                //     `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}cofounder/${sessionId}/`
-                // )
-
-                client.current.onopen = () => {
-                    console.log("WebSocket Client Connected")
-                }
-
-                client.current.onmessage = (message: IMessageEvent) => {
-                    const data = JSON.parse(message.data.toString())
-
-                    if (data.scores) {
-                        setLoadedScores(data.scores)
-                    }
-                    if (data.name) {
-                        setDisplayedTitle(data.name)
-                    }
-                    if (data.top_concern) {
-                        setDisplayedConcern(data.top_concern)
-                    }
-                    if (data.objections) {
-                        setDisplayedObjection(data.objections)
-                    }
-                    if (data.how_to_overcome) {
-                        setDisplayedHowToAddress(data.how_to_overcome)
-                    }
-                    if (data.pitch_deck_analysis) {
-                        setDisplayedPitchDeckAnalysis(data.pitch_deck_analysis.concerns)
-                    }
-
-                    if (data.status) {
-                        switch (data.status) {
-                            case "RA":
-                                setCurrentStep(1)
-                                break
-                            case "RR":
-                                setCurrentStep(2)
-                                break
-                            case "CP":
-                                setCurrentStep(3)
-                                setDisplayedMessages(d => [{
-                                    content: data.message,
-                                    role: 'assistant',
-                                    id: data.id
-                                }])
-                                break
-                            default:
-                                setCurrentStep(0)
-
-                        }
-                    }
-                    // make sure message id isn't already in the list
-                    if (displayedMessages.find(m => m.id === data.id)) {
-                        //replace the message
-                        setDisplayedMessages(d => d.map(m => m.id === data.id ? data : m))
-                    }
-                    if (data.message) {
-                        setDisplayedMessages(d => [...d, {
-                            content: data.message,
-                            role: 'assistant',
-                            id: data.id
-                        }])
-                    }
-                }
-
-                client.current.onclose = (event: ICloseEvent) => {
-                    setTimeout(() => {
-                        connectSocket()
-                    }, 5000) // retries after 5 seconds.
-                }
-
-                client.current.onerror = (error: Error) => {
-                    console.log(`WebSocket Error: ${JSON.stringify(error)}`)
-                }
-            }
+        if (parsedData.scores) {
+            setLoadedScores(parsedData.scores)
         }
+        if (parsedData.name) {
+            setDisplayedTitle(parsedData.name)
+        }
+        if (parsedData.top_concern) {
+            setDisplayedConcern(parsedData.top_concern)
+        }
+        if (parsedData.objections) {
+            setDisplayedObjection(parsedData.objections)
+        }
+        if (parsedData.how_to_overcome) {
+            setDisplayedHowToAddress(parsedData.how_to_overcome)
+        }
+        if (parsedData.pitch_deck_analysis) {
+            setDisplayedPitchDeckAnalysis(parsedData.pitch_deck_analysis.concerns)
+        }
+    }, [data])
 
-        connectSocket()
-    }, [displayedMessages, uuid])
+
 
     const sendMessage = async (message: { content: string, role: "user" }) => {
         if (!message.content) return

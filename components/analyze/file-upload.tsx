@@ -1,13 +1,14 @@
 'use client'
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
-import {getUploadUrl, updateDeckVersion} from "@/app/actions/analyze";
+import {addDeck, getDecks, getUploadUrl, updateDeckVersion} from "@/app/actions/analyze";
 import DisplayFile from "@/components/analyze/file";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {CloudUploadIcon} from "@/components/ui/icons";
+import useSWR, {useSWRConfig} from "swr";
 
 function humanFileSize(bytes: number, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;
@@ -31,14 +32,19 @@ function humanFileSize(bytes: number, si = false, dp = 1) {
     return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-const FileUpload: React.FC = () => {
+export function FileUpload({userId}: { userId: string }) {
     const [file, setFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [uploadUrl, setUploadUrl] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [pitchDeckId, setPitchDeckId] = useState<number | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+    const [newUUID, setNewUUID] = useState<string>('')
+    const [newBackendId, setNewBackendId] = useState<number>(0)
     const router = useRouter()
+    const {mutate} = useSWRConfig()
+
+    const {data, error} = useSWR(userId, getDecks)
 
 
     useEffect(() => {
@@ -60,15 +66,17 @@ const FileUpload: React.FC = () => {
             if (selectedFile.type === 'application/pdf') {
                 setLoading(true);
                 const newUploadUrl = await getUploadUrl(selectedFile.name);
-                console.log(newUploadUrl)
                 if ('error' in newUploadUrl) {
                     setErrorMessage('Error getting upload URL. Please try again.');
                     setFile(null);
                     setLoading(false);
                     return;
                 }
+                setNewUUID(newUploadUrl.uuid)
+                setNewBackendId(newUploadUrl.backendId)
+
+
                 setUploadUrl(newUploadUrl.url)
-                setPitchDeckId(newUploadUrl.pitchDeckId)
                 setFile(selectedFile);
                 setErrorMessage('');
                 setLoading(false);
@@ -99,6 +107,28 @@ const FileUpload: React.FC = () => {
 
             if (response.ok) {
                 console.log('File uploaded successfully');
+                const newDecks = [{
+                    id: 0,
+                    version: 1,
+                    uuid: "1234",
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    ownerId: userId,
+                    backendId: 0,
+                }, ...data ?? []]
+                const options = {
+                    optimisticData: newDecks,
+                    rollbackOnError(error: unknown) {
+                        // If it's timeout abort error, don't rollback
+                        return (error as Error).name !== 'AbortError'
+                    },
+                }
+                const results = await mutate(userId, addDeck(newUUID, newBackendId), options);
+                console.log(results)
+                if (!results || 'error' in results) {
+                    throw new Error('Failed to add deck');
+                }
+                setPitchDeckId(results[0].id)
                 await updateDeckVersion()
                 setUploadSuccess(true)
 
@@ -188,5 +218,3 @@ const FileUpload: React.FC = () => {
         </div>
     );
 }
-
-export default FileUpload;

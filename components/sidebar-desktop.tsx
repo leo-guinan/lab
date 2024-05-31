@@ -1,29 +1,17 @@
+'use client'
 import {Sidebar} from '@/components/sidebar'
-
-import {auth} from '@/auth'
+import useSwr from 'swr'
 import {AnalysisSidebar} from './analysis-sidebar'
-import {prisma} from "@/lib/utils";
+import {getDecks} from "@/app/actions/analyze";
 
-export async function SidebarDesktop() {
-    const session = await auth()
+export function SidebarDesktop({userId}: { userId: string }) {
 
-    if (!session?.user?.id) {
-        return null
-    }
-
-    const decks = await prisma.pitchDeckRequest.findMany({
-        where: {
-            ownerId: session.user.id,
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    })
+    const {data, isLoading, error} = useSwr(userId, getDecks);
 
     return (
         <Sidebar
             className="peer absolute inset-y-0 z-30 hidden -translate-x-full border-r bg-muted duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[250px] xl:w-[300px]">
-            <AnalysisSidebar userId={session.user.id} decks={decks}/>
+            <AnalysisSidebar userId={userId} decks={data ?? []}/>
         </Sidebar>
     )
 }

@@ -7,7 +7,7 @@ import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
 import {redirect} from "next/navigation";
 
-export async function getUploadUrl(filename: string): Promise<{ url: string, pitchDeckId: number } | {
+export async function getUploadUrl(filename: string): Promise<{ url: string, uuid: string, backendId: number } | {
     error: string
 }> {
     const session = await auth()
@@ -44,18 +44,39 @@ if (!user) {
 
     const parsed = await uploadUrlResponse.json()
 
-    const pitchDeckRequest = await prisma.pitchDeckRequest.create({
+    return {
+        url: parsed.upload_url,
+        backendId: parsed.pitch_deck_id,
+        uuid: document.documentId
+    }
+}
+
+export async function addDeck(uuid: string, backendId: number ) {
+
+    const session = await auth();
+
+    if (!session?.user) {
+        return {
+            error: "User not found"
+        }
+    }
+
+     await prisma.pitchDeckRequest.create({
         data: {
-            uuid: document.documentId,
-            backendId: parsed.pitch_deck_id,
+            uuid,
+            backendId: backendId,
             ownerId: session.user.id,
         }
     })
-    console.log("Pitch deck request", pitchDeckRequest)
-    return {
-        url: parsed.upload_url,
-        pitchDeckId: pitchDeckRequest.id
-    }
+    return prisma.pitchDeckRequest.findMany({
+        where: {
+            ownerId: session.user.id
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    })
+
 }
 
 
@@ -413,4 +434,23 @@ export async function getDeckReport(id: number) {
         return null
     }
 
+}
+
+export async function getDecks() {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+        return null
+    }
+
+    const decks = await prisma.pitchDeckRequest.findMany({
+        where: {
+            ownerId: session.user.id,
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    })
+
+    return decks
 }
