@@ -27,6 +27,15 @@ export default function FAQ({user}: { user: { name?: string | null, image?: stri
             question: "Can it write a personalized cold email to a VC?",
             answer: "✍️ Yes, Score My Deck can help you write a personalized cold email to a VC. It uses natural language processing to understand your pitch deck and the VC's preferences to craft a compelling email. Note: Keep emails to 100 words."
         },
+        {
+            question: "How do credits work?",
+            answer: "😌We've kept it super simple.\n" +
+                "You get 50 credits for $10.\n" +
+                "Normal chat messages (1 credit)\n" +
+                "Investor lookups cost (2 credits)\n" +
+                "Emails cost (5 credits).\n" +
+                "A full deck analysis will only cost you 10 credits"
+        }
     ]
 
     return (
