@@ -26,6 +26,7 @@ model User {
   currentDeckId      Int?
   referredById       String?
   currentDeckVersion Int                @default(1)
+  credits            Int                @default(25)
   company            Company[]
   pitchDeckRequests  PitchDeckRequest[]
   sessions           Session[]

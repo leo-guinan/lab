@@ -43,8 +43,24 @@ export async function POST(req: Request) {
             switch (event.type) {
                 case "checkout.session.completed":
                     data = event.data.object as Stripe.Checkout.Session;
-                    console.log(data);
+                    const userId = data?.metadata?.userId as string;
 
+                    const user = await prisma.user.findUnique({
+                        where: {
+                            id: userId
+                        }
+                    });
+
+                    const currentCredits = user?.credits as number;
+
+                    await prisma.user.update({
+                        where: {
+                            id: userId
+                        },
+                        data: {
+                            credits: currentCredits + 50
+                        }
+                    });
 
                     console.log(`💰 CheckoutSession status: ${data.payment_status}`);
                     break;
@@ -55,30 +71,6 @@ export async function POST(req: Request) {
                 case "payment_intent.succeeded":
                     data = event.data.object as Stripe.PaymentIntent;
                     console.log(`💰 PaymentIntent status: ${data.status}`);
-                    break;
-                case "customer.subscription.created":
-                    data = event.data.object as Stripe.Subscription;
-                    console.log(data)
-                    console.log(`🔔 Subscription created: ${data.id}`);
-                    const user = await prisma.user.findFirst({
-                        where: {
-                            stripeCustomerId: data.customer as string
-                        }
-                    })
-
-                    break;
-                case "customer.subscription.updated":
-                    data = event.data.object as Stripe.Subscription;
-
-
-                    console.log(data)
-                    console.log(`🔔 Subscription updated: ${data.id}`);
-                    break;
-                case "customer.subscription.deleted":
-                    data = event.data.object as Stripe.Subscription;
-
-                    console.log(data)
-                    console.log(`🔔 Subscription deleted: ${data.id}`);
                     break;
                 default:
                     throw new Error(`Unhandled event: ${event.type}`);
