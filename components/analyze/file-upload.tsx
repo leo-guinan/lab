@@ -124,6 +124,7 @@ export function FileUpload({userId}: { userId: string }) {
                     },
                 }
                 const results = await mutate(userId, addDeck(newUUID, newBackendId), options);
+                await mutate(`${userId}/credits`)
                 console.log(results)
                 if (!results || 'error' in results) {
                     throw new Error('Failed to add deck');

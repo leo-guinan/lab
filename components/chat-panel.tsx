@@ -7,6 +7,7 @@ export interface ChatPanelProps {
     setInput: React.Dispatch<React.SetStateAction<string>>
     sendMessage: (message: { content: string; role: 'user' }) => void
     isLoading: boolean
+    credits: number
 }
 
 
@@ -14,7 +15,8 @@ export function ChatPanel({
                               input,
                               setInput,
                               sendMessage,
-                              isLoading
+                              isLoading,
+                              credits
                           }: ChatPanelProps) {
     const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
@@ -34,6 +36,7 @@ export function ChatPanel({
                         input={input}
                         setInput={setInput}
                         isLoading={isLoading}
+                        credits={credits}
                     />
                 </div>
             </div>

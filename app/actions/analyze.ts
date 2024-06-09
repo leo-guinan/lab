@@ -6,6 +6,7 @@ import {nanoid, prisma} from "@/lib/utils";
 import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
 import {redirect} from "next/navigation";
+import {User} from "@prisma/client/edge";
 
 export async function getUploadUrl(filename: string): Promise<{ url: string, uuid: string, backendId: number } | {
     error: string
@@ -16,20 +17,21 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, uui
             error: "User not found"
         }
     }
+
+
+
+    const user = session.user as User
+
+    if (user.credits < 10) {
+        return {
+            error: "Not enough credits"
+        }
+    }
+
     const document = await createDocument(session.user.id, "Pitch deck analysis still running...", "prelo")
     // make filename url safe
     const safeFilename = encodeURIComponent(filename)
     const client = process.env.API_CLIENT as string
-    const user = await prisma.user.findUnique({
-        where: {
-            id: session.user.id
-        }
-    })
-if (!user) {
-        return {
-            error: "User not found"
-        }
-    }
 
     const url = `${process.env.PRELO_API_URL as string}get_upload_url/?filename=${safeFilename}&uuid=${document.documentId}&client=${client}&user_id=${user.id}&deck_version=${user.currentDeckVersion}`
     console.log(url)
@@ -51,7 +53,7 @@ if (!user) {
     }
 }
 
-export async function addDeck(uuid: string, backendId: number ) {
+export async function addDeck(uuid: string, backendId: number) {
 
     const session = await auth();
 
@@ -61,11 +63,20 @@ export async function addDeck(uuid: string, backendId: number ) {
         }
     }
 
-     await prisma.pitchDeckRequest.create({
+    await prisma.pitchDeckRequest.create({
         data: {
             uuid,
             backendId: backendId,
             ownerId: session.user.id,
+        }
+    })
+
+    await prisma.user.update({
+        where: {
+            id: session.user.id
+        },
+        data: {
+            credits: (session.user as User).credits - 10
         }
     })
     return prisma.pitchDeckRequest.findMany({
@@ -291,6 +302,7 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
             error: "User not found"
         }
     }
+    const currentCredits = user.credits
 
 
     const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}founder/send/`, {
@@ -302,10 +314,22 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
         body: JSON.stringify({
             uuid,
             message: message.content,
+            credits: currentCredits
         })
     })
 
     const parsed = await sendMessageResponse.json()
+    const creditsUsed = parsed.credits_used
+
+    await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            credits: currentCredits - creditsUsed
+        }
+    })
+
 
     console.log("Parsed", parsed)
     return parsed.message
@@ -426,7 +450,6 @@ export async function getDeckReport(id: number) {
                 }]
             }
         }
-
 
 
     } catch (e) {

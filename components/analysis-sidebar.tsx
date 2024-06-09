@@ -43,6 +43,13 @@ export function AnalysisSidebar({userId, decks}: ChatHistoryProps) {
         }
     }, [searchParams, userId])
 
+    useEffect(() => {
+        console.log("credits data", data)
+        if (data !== undefined && data === 0) {
+            setCreditModalOpen(true)
+        }
+    }, [data])
+
     return (
         <div className="flex flex-col h-full">
             {showCredits && (
