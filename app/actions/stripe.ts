@@ -37,6 +37,7 @@ export async function createCheckoutSession(
             },
             success_url: `${data.redirectUrl}/?session_id={CHECKOUT_SESSION_ID}&status=success`,
             cancel_url: `${data.redirectUrl}/?status=canceled`,
+            allow_promotion_codes: true,
         });
 
     console.log(checkoutSession.url)
