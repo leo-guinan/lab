@@ -17,6 +17,8 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
 import AnalysisCompletedModal from "@/components/analyze/analysis-completed-modal";
+import useSWR, {mutate} from "swr";
+import {getUserCredits} from "@/app/actions/user";
 
 interface PreloChatMessage {
     id: string
@@ -37,6 +39,7 @@ interface AnalysisChatProps {
         concern: string
     }[]
     user: {
+        id: string
         name?: string | null
         image?: string | null
     }
@@ -68,6 +71,7 @@ export default function AnalysisChat({
         title: string,
         concern: string
     }[]>(pitchDeckAnalysis)
+    const {data: credits} = useSWR(`${user.id}/credits`, getUserCredits)
 
     const {
         data,
@@ -128,6 +132,7 @@ export default function AnalysisChat({
             setChatMessageLoading(true)
 
             const response = await sendChatMessage(uuid, message);
+            await mutate(`${user.id}/credits`)
 
             if (!response) {
                 console.error("No response")
@@ -176,6 +181,7 @@ export default function AnalysisChat({
                                                     input={input}
                                                     setInput={setInput}
                                                     sendMessage={sendMessage}
+                                                    credits={credits ?? 0}
 
                                                 />
                                             </div>

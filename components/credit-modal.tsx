@@ -22,8 +22,8 @@ export default function CreditModal({open, setOpen}: { open: boolean, setOpen: (
                 <AlertDialogHeader>
                     <AlertDialogTitle className="flex pt-16 text-4xl font-extrabold justify-center">How Credits Work 🤔</AlertDialogTitle>
                     <AlertDialogDescription className="flex flex-col pb-8 text-gray-900 dark:text-zinc-50  justify-center">
-                        <h1 className="flex text-xl justify-center">We&apos;ve kept it super simple</h1>
-                        <h2 className="flex text-lg text-objections justify-center pb-8">You get 50 Credits for $10</h2>
+                        <p className="flex text-xl justify-center">We&apos;ve kept it super simple</p>
+                        <p className="flex text-lg text-objections justify-center pb-8">You get 50 Credits for $10</p>
 
                         <p className="flex flex-row justify-start items-center text-lg py-2 pl-4"><CheckmarkIcon className="size-8 mr-4" overrideColor="#FFCC2F" /> Normal chat messages (1 credit)</p>
                         <p className="flex flex-row justify-start items-center text-lg py-2 pl-4"><CheckmarkIcon className="size-8 mr-4"  overrideColor="#FFCC2F" /> Investor lookups cost (2 credits)</p>
