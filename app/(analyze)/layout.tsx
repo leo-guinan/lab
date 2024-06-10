@@ -1,5 +1,4 @@
 import {SidebarDesktop} from '@/components/sidebar-desktop'
-import {Banner} from "@/components/banner";
 import {auth} from "@/auth";
 import {redirect} from "next/navigation";
 
