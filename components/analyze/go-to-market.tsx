@@ -15,7 +15,7 @@ export default function GoToMarket({strategy}: GoToMarketProps) {
                                                                                                 className="w-full">
             {strategy.map((analysis, index) => (
                 <AccordionItem value={`question-${index}`} key={`question-${index}`}>
-                    <AccordionTrigger iconColor="#FF7878" className="whitespace-nowrap text-left">{analysis.step}</AccordionTrigger>
+                    <AccordionTrigger iconColor="#FF7878" className="truncate text-left">{analysis.step}</AccordionTrigger>
                     <AccordionContent>
                         <MarkdownBlock content={analysis.description}/>
                     </AccordionContent>
