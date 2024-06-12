@@ -431,10 +431,12 @@ export async function getDeckReport(id: number) {
                 Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
             },
             body: JSON.stringify({
-                deck_id: pitchDeckRequest.backendId
+                deck_id: pitchDeckRequest.backendId,
+                user_id: pitchDeckRequest.ownerId
             })
         })
         const parsed = await sendMessageResponse.json()
+        console.log(parsed)
         try {
             return {
                 ...parsed,

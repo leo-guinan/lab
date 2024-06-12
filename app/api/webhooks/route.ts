@@ -58,7 +58,8 @@ export async function POST(req: Request) {
                             id: userId
                         },
                         data: {
-                            credits: currentCredits + 50
+                            credits: currentCredits + 50,
+                            paidUser: true
                         }
                     });
 

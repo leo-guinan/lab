@@ -5,6 +5,7 @@ import PitchDeckAnalysis from "@/components/analyze/pitch-deck-analysis";
 import {getAnalysisChat, getDeckReport, getPitchDeck, getScores, triggerCheck} from "@/app/actions/analyze";
 import {formatToday, prisma} from "@/lib/utils";
 import AnalysisChat from "@/components/analyze/chat";
+import {User} from "@prisma/client/edge";
 
 interface PitchDeckPageProps {
     params: {
@@ -32,7 +33,6 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
 
     const scores = await getScores(pitchDeck.id)
     const pitchDeckReport = await getDeckReport(pitchDeck.id)
-
     const response = await getAnalysisChat(Number(params.id))
     if ('error' in response) {
         console.log(response.error)
@@ -49,7 +49,7 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
     })
 
     return <AnalysisChat
-        user={session.user}
+        user={session.user as User}
         uuid={pitchDeck.uuid}
         scores={scores}
         messages={response.messages}
@@ -58,5 +58,6 @@ export default async function PreloUploadPitchDeckPage({params}: PitchDeckPagePr
         objections={pitchDeckReport.objections}
         howToAddress={pitchDeckReport.how_to_overcome}
         pitchDeckAnalysis={pitchDeckReport.pitch_deck_analysis}
+        goToMarketStrategy={pitchDeckReport.gtm_strategy}
     />
 }

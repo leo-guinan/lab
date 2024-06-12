@@ -5,7 +5,6 @@ import {EmptyScreen} from "@/components/empty-screen";
 import {ChatPanel} from "@/components/chat-panel";
 import {useEffect, useRef, useState} from "react";
 // import {sendPreloChatMessage} from "@/app/actions/prelo";
-import {w3cwebsocket as W3CWebSocket} from "websocket";
 import {PitchDeckScores} from "@/lib/types";
 import {sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
@@ -19,6 +18,7 @@ import useSWRSubscription from 'swr/subscription'
 import AnalysisCompletedModal from "@/components/analyze/analysis-completed-modal";
 import useSWR, {mutate} from "swr";
 import {getUserCredits} from "@/app/actions/user";
+import {User} from "@prisma/client/edge";
 
 interface PreloChatMessage {
     id: string
@@ -34,15 +34,12 @@ interface AnalysisChatProps {
     concern: string
     objections: string
     howToAddress: string
+    goToMarketStrategy: string
     pitchDeckAnalysis: {
         title: string
         concern: string
     }[]
-    user: {
-        id: string
-        name?: string | null
-        image?: string | null
-    }
+    user: User
 }
 
 export default function AnalysisChat({
@@ -54,7 +51,8 @@ export default function AnalysisChat({
                                          concern,
                                          objections,
                                          howToAddress,
-                                         pitchDeckAnalysis
+                                         pitchDeckAnalysis,
+                                         goToMarketStrategy
                                      }: AnalysisChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<PreloChatMessage[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
@@ -67,6 +65,7 @@ export default function AnalysisChat({
     const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
     const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
     const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
+    const [displayedGoToMarketStrategy, setDisplayedGoToMarketStrategy] = useState<string>(goToMarketStrategy)
     const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<{
         title: string,
         concern: string
@@ -84,6 +83,7 @@ export default function AnalysisChat({
         socket.addEventListener('error', (event) => next(event.error))
         return () => socket.close()
     })
+
 
     useEffect(() => {
         if (bottomRef.current) {
@@ -103,6 +103,7 @@ export default function AnalysisChat({
         }
         if (parsedData.top_concern) {
             setDisplayedConcern(parsedData.top_concern)
+            setCompletedDialogOpen(true)
         }
         if (parsedData.objections) {
             setDisplayedObjection(parsedData.objections)
@@ -113,9 +114,10 @@ export default function AnalysisChat({
         if (parsedData.pitch_deck_analysis) {
             setDisplayedPitchDeckAnalysis(parsedData.pitch_deck_analysis.concerns)
         }
-        setCompletedDialogOpen(true)
+        if (parsedData.gtm_strategy) {
+            setDisplayedGoToMarketStrategy(parsedData.gtm_strategy)
+        }
     }, [data])
-
 
 
     const sendMessage = async (message: { content: string, role: "user" }) => {
@@ -200,7 +202,11 @@ export default function AnalysisChat({
                                                 <Report topObjection={displayedConcern}
                                                         objectionsToOvercome={displayedObjection}
                                                         howToAddress={displayedHowToAddress}
-                                                        pitchDeckAnalysis={displayedPitchDeckAnalysis}/>
+                                                        pitchDeckAnalysis={displayedPitchDeckAnalysis}
+                                                        goToMarketStrategy={displayedGoToMarketStrategy}
+                                                        user={user}
+
+                                                />
                                             </ScrollArea>
                                         </div>
                                     </div>
@@ -223,7 +229,7 @@ export default function AnalysisChat({
                             <div className="flex flex-col size-full sm:w-1/2 overflow-y-scroll">
                                 <div className="flex flex-col w-4/5 mx-auto">
                                     <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
-                                    <EmptyScreen />
+                                    <EmptyScreen/>
                                 </div>
                             </div>
                         </div>

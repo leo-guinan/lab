@@ -9,7 +9,6 @@ import {usePathname} from 'next/navigation'
 import {motion} from 'framer-motion'
 
 import {buttonVariants} from '@/components/ui/button'
-import {useLocalStorage} from '@/lib/hooks/use-local-storage'
 import {cn, formatToday} from '@/lib/utils'
 import {PitchDeckRequest} from "@prisma/client/edge";
 import {getDeckName} from "@/app/actions/analyze";
@@ -23,10 +22,20 @@ interface SidebarItemProps {
 
 export function SidebarItem({index, deck, children}: SidebarItemProps) {
     const pathname = usePathname();
+    const [name, setName] = useState(deck?.name)
 
     const isActive = pathname === `/report/${deck.id}`;
     const shouldAnimate = false;
     const formattedDate = formatToday(deck?.createdAt);
+    useEffect(() => {
+        const checkForName = async () => {
+            if (!deck?.name) {
+                setName(await getDeckName(deck.id));
+            }
+        }
+        checkForName()
+    })
+
     if (!deck?.id) return null;
 
     return (
@@ -53,7 +62,7 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
                 href={`/report/${deck.id}`}
                 className={cn(
                     buttonVariants({variant: 'ghost'}),
-                    'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',
+                    'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10 h-full',
                     isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
                 )}
             >
@@ -64,6 +73,12 @@ export function SidebarItem({index, deck, children}: SidebarItemProps) {
                             {formattedDate}
                         </span>
                     </div>
+                    {name && (
+                        <div className="text-xs text-zinc-400 dark:text-zinc-600 ml-2">
+                            {name}
+                        </div>
+                    )}
+
                 </div>
             </Link>
             {isActive && <div className="absolute right-2 top-1">{children}</div>}

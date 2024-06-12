@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client/edge'
+import {PrismaClient, User} from '@prisma/client/edge'
 import {PrismaAdapter} from "@auth/prisma-adapter";
 import NextAuth, {type DefaultSession} from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
@@ -30,21 +30,84 @@ export const authOptions = {
     callbacks: {
         // @ts-ignore
         jwt({token, profile}) {
+            console.log(token)
             if (profile) {
+                console.log(profile)
                 token.id = profile.id
                 token.image = profile.avatar_url || profile.picture
             }
             return token
         },
         // @ts-ignore
-        session: ({session, token}) => {
+        session: async ({session, token}) => {
+            const user = session?.user as User
             if (session?.user && token?.id) {
                 session.user.id = String(token.id)
+            }
+            if (user && !user.loopsId) {
+
+                try {
+
+                    const userOnListOptions = {method: 'GET', headers: {Authorization: `Bearer ${process.env.LOOPS_API_KEY}`}};
+
+                    const userOnListResponse = await fetch(`https://app.loops.so/api/v1/contacts/find?email=${user.email}`, userOnListOptions)
+                    const userOnList = await userOnListResponse.json()
+                    if (userOnList.length > 0) {
+                        await prisma.user.update({
+                            where: {
+                                id: user.id
+                            },
+                            data: {
+                                loopsId: userOnList[0].id
+                            }
+                        })
+                        return session
+                    }
+
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            Authorization: `Bearer ${process.env.LOOPS_API_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(
+                            {
+                                email: user.email,
+                                name: user.name,
+                                source: "API",
+                                subscribed: true,
+                                userGroup: "Score My Deck Users",
+                                userId: user.id
+                            }
+                        )
+                    };
+
+                    const result = await fetch('https://app.loops.so/api/v1/contacts/create', options)
+
+                    const answer = await result.json()
+                    if (!answer.success) {
+                        console.error("Error adding user to loops campaign", answer)
+                    } else {
+                        await prisma.user.update({
+                            where: {
+                                id: user.id
+                            },
+                            data: {
+                                loopsId: answer.id
+                            }
+                        })
+                    }
+                } catch (e) {
+                    console.error("Error adding user to loops campaign", e)
+                }
+
+
             }
             return session
         },
         // @ts-ignore
         authorized({auth}) {
+
             return !!auth?.user // this ensures there is a logged in user for -every- request
         },
 
