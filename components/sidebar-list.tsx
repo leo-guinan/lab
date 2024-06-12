@@ -4,7 +4,6 @@ import {useState} from 'react'
 import {PitchDeckRequest} from '@prisma/client/edge';
 import {SidebarItems} from "@/components/sidebar-items";
 import {MinusIcon, PlusIcon} from "@/components/ui/icons";
-import {cn} from "@/lib/utils";
 
 interface SidebarListProps {
     userId?: string
@@ -32,19 +31,12 @@ export function SidebarList({userId: _, decks}: SidebarListProps) {
                     </>
                 )}
                 {decks.length === 0 && (
-                <>
-                        {!open && (
-                            <PlusIcon
-                                overrideColor="#E8E8E8"
-                                className="size-8 text-zinc-50"/>
-                        )}
-                        {open && (
-                            <MinusIcon
-                                overrideColor="#E8E8E8"
-                                className="size-8 text-zinc-50 "/>
-                        )}
+                    <>
+                        <PlusIcon
+                            overrideColor="#E8E8E8"
+                            className="size-8 text-zinc-50"/>
                     </>
-                    )}
+                )}
                 <span className="ml-2">View Pitch Decks</span>
             </div>
             <div className="flex-1 overflow-auto">
