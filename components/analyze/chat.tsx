@@ -34,7 +34,10 @@ interface AnalysisChatProps {
     concern: string
     objections: string
     howToAddress: string
-    goToMarketStrategy: string
+    goToMarketStrategy: {
+        description: string
+        step: string
+    }[]
     pitchDeckAnalysis: {
         title: string
         concern: string
@@ -65,7 +68,10 @@ export default function AnalysisChat({
     const [displayedConcern, setDisplayedConcern] = useState<string>(concern)
     const [displayedObjection, setDisplayedObjection] = useState<string>(objections)
     const [displayedHowToAddress, setDisplayedHowToAddress] = useState<string>(howToAddress)
-    const [displayedGoToMarketStrategy, setDisplayedGoToMarketStrategy] = useState<string>(goToMarketStrategy)
+    const [displayedGoToMarketStrategy, setDisplayedGoToMarketStrategy] = useState<{
+        description: string
+        step: string
+    }[]>(goToMarketStrategy)
     const [displayedPitchDeckAnalysis, setDisplayedPitchDeckAnalysis] = useState<{
         title: string,
         concern: string

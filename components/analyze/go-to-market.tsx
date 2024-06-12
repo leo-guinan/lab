@@ -2,22 +2,22 @@
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import MarkdownBlock from "@/components/ui/markdown-block";
 
-interface PitchDeckAnalysisProps {
-    pitchDeckAnalysis: {
-        concern: string
-        title: string
+interface GoToMarketProps {
+    strategy: {
+        description: string
+        step: string
     }[]
 }
 
-export default function PitchDeckAnalysis({pitchDeckAnalysis}: PitchDeckAnalysisProps) {
+export default function GoToMarket({strategy}: GoToMarketProps) {
     return (
         <div className="text-base leading-6 cursor-text flex flex-col w-full h-auto"><Accordion type="multiple"
                                                                                                 className="w-full">
-            {pitchDeckAnalysis.map((analysis, index) => (
+            {strategy.map((analysis, index) => (
                 <AccordionItem value={`question-${index}`} key={`question-${index}`}>
-                    <AccordionTrigger iconColor="#FF7878">{analysis.title}</AccordionTrigger>
+                    <AccordionTrigger iconColor="#FF7878">{analysis.step}</AccordionTrigger>
                     <AccordionContent>
-                        <MarkdownBlock content={analysis.concern}/>
+                        <MarkdownBlock content={analysis.description}/>
                     </AccordionContent>
                 </AccordionItem>
             ))}

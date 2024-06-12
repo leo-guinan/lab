@@ -3,13 +3,17 @@ import PitchDeckAnalysis from "@/components/analyze/pitch-deck-analysis";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import MarkdownBlock from "@/components/ui/markdown-block";
 import {User} from "@prisma/client/edge";
+import GoToMarket from "@/components/analyze/go-to-market";
 
 interface ReportProps {
     user: User,
     topObjection: string
     objectionsToOvercome: string
     howToAddress: string
-    goToMarketStrategy: string
+    goToMarketStrategy: {
+        description: string
+        step: string
+    }[]
     pitchDeckAnalysis: {
         concern: string
         title: string
@@ -39,7 +43,7 @@ export default function Report({
                             <AccordionTrigger iconColor="#FF7878">Go To Market Strategy</AccordionTrigger>
                             <AccordionContent>
                                 {user.paidUser && (
-                                    <MarkdownBlock content={goToMarketStrategy}/>
+                                    <GoToMarket strategy={goToMarketStrategy} />
 
                                 )}
                                 {!user.paidUser && (

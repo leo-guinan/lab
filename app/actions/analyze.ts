@@ -437,10 +437,27 @@ export async function getDeckReport(id: number) {
         })
         const parsed = await sendMessageResponse.json()
         console.log(parsed)
+        let gtmStrategy = []
+        try {
+            gtmStrategy = parsed.gtm_strategy ? JSON.parse(parsed.gtm_strategy).suggestions : [{
+                "step": "Go to Market Strategy",
+                "description": parsed.gtm_strategy
+            }]
+        } catch (e) {
+            console.error(e)
+            gtmStrategy = [
+                {
+                    "step": "Go to Market Strategy",
+                    "description": parsed.gtm_strategy
+                }
+            ]
+        }
         try {
             return {
                 ...parsed,
-                pitch_deck_analysis: parsed.pitch_deck_analysis ? JSON.parse(parsed.pitch_deck_analysis).concerns : ""
+                pitch_deck_analysis: parsed.pitch_deck_analysis ? JSON.parse(parsed.pitch_deck_analysis).concerns : "",
+                gtm_strategy: gtmStrategy
+
             }
         } catch (e) {
             console.error(e)
@@ -449,6 +466,10 @@ export async function getDeckReport(id: number) {
                 pitch_deck_analysis: [{
                     title: "Pitch Deck Analysis",
                     content: parsed.pitch_deck_analysis
+                }],
+                gtm_strategy: [{
+                    "step": "Go to Market Strategy",
+                    "description": parsed.gtm_strategy
                 }]
             }
         }
