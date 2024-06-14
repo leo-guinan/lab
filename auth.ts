@@ -74,7 +74,8 @@ export const authOptions = {
                             })
                         };
                         // eventually need to handle case when this fails, but for now, don't worry about it
-                        await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
+                        const eventAnswer = await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
+                        console.log(eventAnswer)
 
 
 
@@ -124,7 +125,8 @@ export const authOptions = {
                             })
                         };
                         // eventually need to handle case when this fails, but for now, don't worry about it
-                        await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
+                        const eventAnswer = await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
+                        console.log(eventAnswer)
                     }
                 } catch (e) {
                     console.error("Error adding user to loops campaign", e)
