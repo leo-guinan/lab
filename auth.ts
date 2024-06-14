@@ -48,7 +48,10 @@ export const authOptions = {
 
                 try {
 
-                    const userOnListOptions = {method: 'GET', headers: {Authorization: `Bearer ${process.env.LOOPS_API_KEY}`}};
+                    const userOnListOptions = {
+                        method: 'GET',
+                        headers: {Authorization: `Bearer ${process.env.LOOPS_API_KEY}`}
+                    };
 
                     const userOnListResponse = await fetch(`https://app.loops.so/api/v1/contacts/find?email=${user.email}`, userOnListOptions)
                     const userOnList = await userOnListResponse.json()
@@ -61,6 +64,21 @@ export const authOptions = {
                                 loopsId: userOnList[0].id
                             }
                         })
+                        const eventOptions = {
+                            method: 'POST',
+                            headers: {Authorization: `Bearer  ${process.env.LOOPS_API_KEY}`, 'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                "userId": user.id,
+                                "eventName":"userSignup",
+                                "eventProperties":{}
+                            })
+                        };
+                        // eventually need to handle case when this fails, but for now, don't worry about it
+                        await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
+
+
+
+
                         return session
                     }
 
@@ -96,6 +114,17 @@ export const authOptions = {
                                 loopsId: answer.id
                             }
                         })
+                        const eventOptions = {
+                            method: 'POST',
+                            headers: {Authorization: `Bearer  ${process.env.LOOPS_API_KEY}`, 'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                "userId": user.id,
+                                "eventName":"userSignup",
+                                "eventProperties":{}
+                            })
+                        };
+                        // eventually need to handle case when this fails, but for now, don't worry about it
+                        await fetch('https://app.loops.so/api/v1/events/send', eventOptions)
                     }
                 } catch (e) {
                     console.error("Error adding user to loops campaign", e)
