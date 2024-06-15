@@ -19,7 +19,6 @@ export async function getUploadUrl(filename: string): Promise<{ url: string, uui
     }
 
 
-
     const user = session.user as User
 
     if (user.credits < 10) {
@@ -499,4 +498,32 @@ export async function getDecks() {
     })
 
     return decks
+}
+
+export async function getDownloadUrl(deckUUID: string) {
+    console.log("Getting download url")
+    const pitchDeckRequest = await prisma.pitchDeckRequest.findUnique({
+        where: {
+            uuid: deckUUID,
+        }
+    })
+    console.log("Pitch Deck", pitchDeckRequest)
+    if (!pitchDeckRequest) {
+        return null
+    }
+    console.log("Making request")
+    const sendMessageResponse = await fetch(`${process.env.PRELO_API_URL as string}deck/report/download/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+        },
+        body: JSON.stringify({
+            pitch_deck_id: pitchDeckRequest.backendId,
+        })
+    })
+    const parsed = await sendMessageResponse.json()
+    console.log("response", parsed)
+    return parsed.download_url
+
 }

@@ -3,10 +3,10 @@ import {ChatList} from "@/components/chat-list";
 import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
 import {EmptyScreen} from "@/components/empty-screen";
 import {ChatPanel} from "@/components/chat-panel";
-import {useEffect, useRef, useState} from "react";
+import {SyntheticEvent, useEffect, useRef, useState} from "react";
 // import {sendPreloChatMessage} from "@/app/actions/prelo";
 import {PitchDeckScores} from "@/lib/types";
-import {sendChatMessage} from "@/app/actions/analyze";
+import {getDownloadUrl, sendChatMessage} from "@/app/actions/analyze";
 import Scores from "@/components/analyze/scores";
 import {nanoid} from "@/lib/utils";
 import Report from "@/components/analyze/report";
@@ -125,6 +125,17 @@ export default function AnalysisChat({
         }
     }, [data])
 
+    const handleDownloadClick = async (e: SyntheticEvent) => {
+        e.preventDefault()
+        console.log("Clicked")
+        const download_url = await getDownloadUrl(uuid)
+        if (!download_url) {
+            console.error(download_url.error)
+        } else {
+            window.open(download_url)
+        }
+    }
+
 
     const sendMessage = async (message: { content: string, role: "user" }) => {
         if (!message.content) return
@@ -202,7 +213,8 @@ export default function AnalysisChat({
                                 <ResizablePanel>
                                     <div className="flex flex-col size-full overflow-y-scroll">
                                         <div className="mx-auto border-box w-4/5">
-                                            <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}</h1>
+                                            <h1 className="flex justify-center w-full mx-auto mt-2 mb-8 text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 sm:text-4xl">{displayedTitle}
+                                            </h1>
                                             <ScrollArea className="flex flex-col size-full">
                                                 <Scores scores={loadedScores}/>
                                                 <Report topObjection={displayedConcern}
